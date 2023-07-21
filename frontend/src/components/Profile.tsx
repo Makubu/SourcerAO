@@ -4,6 +4,7 @@ import {
   Button,
   HStack,
   Spinner,
+  Tag,
   Text,
   useToast,
   VStack,
@@ -34,24 +35,17 @@ export function Profile() {
 
   if (isConnected) {
     return (
-      <Card width="fit-content" padding="1rem">
-        <HStack>
-          <Avatar size="sm" />
-          <VStack alignItems="flex-start" spacing={0}>
-            <Text fontSize="sm" fontWeight="bold" color="teal">
-              {connector?.name}
-            </Text>
-            <Text fontSize="sm" fontWeight="semibold">
-              {address?.slice(0, 5) +
-                '...' +
-                address?.slice(address.length - 4, address.length)}
-            </Text>
-          </VStack>
-        </HStack>
-        <Button onClick={() => disconnect()} width="100%" size="xs">
+      <HStack alignItems="flex-end" spacing={1}>
+        <Tag fontSize="sm" fontWeight="semibold" colorScheme="purple" variant="subtle">
+          {connector?.name}:{' '}
+          {address?.slice(0, 5) +
+            '...' +
+            address?.slice(address.length - 4, address.length)}
+        </Tag>
+        <Button onClick={() => disconnect()} size="xs" boxShadow="sm" variant="outline">
           Disconnect
         </Button>
-      </Card>
+      </HStack>
     );
   }
 
