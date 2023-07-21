@@ -1,34 +1,30 @@
 import { Route, Routes } from 'react-router-dom';
-import IndexPage from '@app/pages';
-import { configureChains, createConfig, sepolia, WagmiConfig } from 'wagmi';
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { publicProvider } from 'wagmi/providers/public';
-
-const { publicClient, webSocketPublicClient, chains } = configureChains(
-  [sepolia], // mainnet in prod
-  [publicProvider()],
-);
-
-const config = createConfig({
-  autoConnect: true,
-  connectors: [new MetaMaskConnector({ chains })],
-  publicClient,
-  webSocketPublicClient,
-});
+import IndexPage from '@app/pages/index';
+import ProjectPage from '@app/pages/project';
+import UserPage from '@app/pages/user';
+import { Container } from '@chakra-ui/react';
 
 export default function App() {
   // const location = useLocation();
   // const navigate = useNavigate();
 
   return (
-    <WagmiConfig config={config}>
+    <Container
+      padding="2rem"
+      paddingTop="1rem"
+      width="100%"
+      height="100%"
+      maxW="none"
+      margin="0"
+      maxH="none"
+    >
       <Routes>
         <Route>
           <Route path="/" element={<IndexPage />} />
-          {/* <Route path="/:projectId" element={<IndexPage />} /> */}
-          {/* <Route path="/:userId" element={<IndexPage />} /> */}
+          <Route path="/project/:projectId" element={<ProjectPage />} />
+          <Route path="/user/:userId" element={<UserPage />} />
         </Route>
       </Routes>
-    </WagmiConfig>
+    </Container>
   );
 }

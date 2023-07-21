@@ -34,11 +34,11 @@ export function Profile() {
 
   if (isConnected) {
     return (
-      <Card width="fit-content">
+      <Card width="fit-content" padding="1rem">
         <HStack>
           <Avatar size="sm" />
           <VStack alignItems="flex-start" spacing={0}>
-            <Text fontSize="xs" fontWeight="semibold" color="teal">
+            <Text fontSize="sm" fontWeight="bold" color="teal">
               {connector?.name}
             </Text>
             <Text fontSize="sm" fontWeight="semibold">
@@ -48,7 +48,9 @@ export function Profile() {
             </Text>
           </VStack>
         </HStack>
-        <Button onClick={() => disconnect()}>Disconnect</Button>
+        <Button onClick={() => disconnect()} width="100%" size="xs">
+          Disconnect
+        </Button>
       </Card>
     );
   }
@@ -62,6 +64,7 @@ export function Profile() {
           onClick={() => connect({ connector })}
           variant="solid"
           colorScheme="blue"
+          boxShadow="md"
         >
           {connector.name}
           {!connector.ready && ' (unsupported)'}
