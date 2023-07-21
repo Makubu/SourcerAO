@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import {
   Avatar,
-  Box,
   Button,
   HStack,
   Spinner,
@@ -10,6 +9,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
+
+import Card from './Card';
 
 export function Profile() {
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
@@ -33,13 +34,7 @@ export function Profile() {
 
   if (isConnected) {
     return (
-      <Box
-        boxShadow="md"
-        borderWidth="sm"
-        borderRadius="md"
-        padding="1rem"
-        width="fit-content"
-      >
+      <Card width="fit-content">
         <HStack>
           <Avatar size="sm" />
           <VStack alignItems="flex-start" spacing={0}>
@@ -53,7 +48,8 @@ export function Profile() {
             </Text>
           </VStack>
         </HStack>
-      </Box>
+        <Button onClick={() => disconnect()}>Disconnect</Button>
+      </Card>
     );
   }
 
