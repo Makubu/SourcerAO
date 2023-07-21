@@ -1,17 +1,6 @@
 import { useEffect } from 'react';
-import {
-  Avatar,
-  Button,
-  HStack,
-  Spinner,
-  Tag,
-  Text,
-  useToast,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, HStack, Spinner, Tag, useToast } from '@chakra-ui/react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-
-import Card from './Card';
 
 export function Profile() {
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
@@ -59,6 +48,7 @@ export function Profile() {
           variant="solid"
           colorScheme="blue"
           boxShadow="md"
+          size="sm"
         >
           {connector.name}
           {!connector.ready && ' (unsupported)'}

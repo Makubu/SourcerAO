@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: backend
+    build:
+      dockerfile: dockerfile
+    depends_on:
+      - ipfs
+    ports:
+      - 8081:8081
+
+  ipfs:
+    container_name: ipfs
+    image: ipfs/go-ipfs
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ./var/ipfs-docker-data:/data/ipfs/
+      - ./var/ipfs-docker-staging:/export

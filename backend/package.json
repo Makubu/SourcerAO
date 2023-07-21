@@ -1,0 +1,30 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -l 0 -c \"blue,green\" -n \"tsc,node\"  --kill-others \"tsc -w\" \"nodemon dist/index.js\"",
+    "build": "rm -rf ./build && tsc",
+    "lint": "eslint . --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@helia/json": "^1.0.0",
+    "dotenv": "^16.3.1",
+    "ipfs-http-client": "^60.0.1",
+    "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^12.0.0",
+    "koa-session": "^6.4.0",
+    "kubo-rpc-client": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.6",
+    "@types/koa-bodyparser": "^4.3.10",
+    "@types/koa-router": "^7.4.4",
+    "@types/koa-session": "^6.4.1",
+    "@types/node": "^20.4.2",
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
