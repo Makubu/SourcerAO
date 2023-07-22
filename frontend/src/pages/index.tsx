@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import CreateProjectButton from '@app/components/CreateProjectButton';
 import { Profile } from '@app/components/Profile';
 import SearchBar from '@app/components/SearchBar';
 import ThemeToggler from '@app/components/ThemeToggler';
@@ -20,7 +21,7 @@ export default function Index() {
           direction={{ base: 'column', lg: 'row' }}
         >
           <HStack spacing="1rem" width="100%">
-            {/* <CreateProjectButton /> */}
+            <CreateProjectButton />
             <Text>Projects: {projects?.length}</Text>
           </HStack>
           <VStack alignItems="flex-end" width="100%">
