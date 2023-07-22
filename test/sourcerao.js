@@ -170,10 +170,51 @@ describe("SourcerAO", function () {
             var { sourcerao, proj, param, owner, addr1, addr2, addr3, addr4} = await loadFixture(deployContractProgressProject);
 
             sourcerao.setParameters(10,0,0);
-            await sourcerao.connect(addr1).litigate(0, {value: ethers.parseEther("10")});
+            await sourcerao.connect(addr3).startLitigationPhase_dev(0);
+            proj =  await sourcerao.getProject(0);
+            // State is now 4 (litigation)
+            expect(proj[6]).to.equal(5n);
 
+            await sourcerao.connect(addr4).handleLitigationPhase(0);
+            proj =  await sourcerao.getProject(0);
+            // State is now 6 (Arbitration)
+            expect(proj[6]).to.equal(6n);
+            // Arbitrator is chosen
+            expect(proj[12]).to.equal(addr4.address);
 
+            // 160 is expected to be paid to addr2 since he funded 200 eth and the decision is 20% in favor for dev and 80% in favor for the funders (200*0.8 = 160)
+            // addr4 is the arbitrator and gets the total amount of the bail (30 eth)
+            // addr3 is the dev and gets 20% of the bounty and his own bail (300*0.2 + 30 = 60 eth)
+            await expect(sourcerao.connect(addr4).settleLitigation(0, 20)).to.changeEtherBalances(
+                [addr2, addr3, addr4],
+                [ethers.parseEther("160"), ethers.parseEther("60"), ethers.parseEther("30")]
+            );
         });
 
+        it("Normal project end", async function () {
+            var { sourcerao, proj, param, owner, addr1, addr2, addr3, addr4} = await loadFixture(deployContractProgressProject);
+            // Set litigation parameters to 3600 seconds
+            sourcerao.setParameters(10,0,3600);
+
+            // A funder can end the project
+            await sourcerao.connect(addr2).completeProject(0);
+            proj =  await sourcerao.getProject(0);
+            // State is now 4 (Completed)
+            expect(proj[6]).to.equal(4n);
+
+            // The dev needs to wait for the litigation period to end
+            await expect(sourcerao.connect(addr3).closeProject(0)).to.be.revertedWith("Litigation period is not over");
+
+            // Litigation period is over
+            await helpers.time.increaseTo(await helpers.time.latest() + 3601);
+
+            // addr 2 gets the bail back (20 eth)
+            // addr 3 (the dev) gets the bounty and the bail back (300 eth)
+            
+            await expect(sourcerao.connect(addr3).closeProject(0)).to.changeEtherBalances(
+                [addr2, addr3],
+                [ethers.parseEther("20"), ethers.parseEther("300")]
+            );
+        });
     });
 });

@@ -7,14 +7,15 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 // Custom types
 ///////////////
 
-enum ProjectState { OPEN, VOTE_PHASE, WAITING_FOR_DEV, PROGRESS, COMPLETED, LITIGATION, ARBITRATION}
+enum ProjectState { OPEN, VOTE_PHASE, WAITING_FOR_DEV, PROGRESS, COMPLETED, LITIGATION, ARBITRATION, CLOSED}
 // OPEN: the project is open to fundings and applications
 // VOTE_PHASE: the project is closed to fundings and applications, the funders are voting to choose the developper
 // WAITING_FOR_DEV: the project is waiting for the developper to accept the project and put a bail
 // PROGRESS: the project is in progress, the developper has been chosen
-// COMPLETED: the project is completed
+// COMPLETED: the project is completed but litigation is still possible
 // LITIGATION: the project is in litigation
 // ARBITRATION: the project is in arbitration
+// CLOSED: the project is closed, nothing can be done anymore
 
 struct Fund {
     uint bounty;
@@ -41,6 +42,8 @@ struct Project {
     address arbitrator;
     address[] funders_addr;
     address[] developpers_addr;
+    // date of the project delivery
+    uint completion_date;
     // list of funders who funded the project
     mapping(address => Fund) funds;
     // Mapping of developpers who applied to the project (false if the developper has removed his application)
@@ -71,6 +74,7 @@ struct Project_view {
     address arbitrator;
     address[] funders_addr;
     address[] developpers_addr;
+    uint completion_date;
 }   
 
 struct Developpers_attributes {
@@ -115,7 +119,7 @@ contract SourcerAO is AccessControl {
 
 
     /////////////////////////////////////////////////////////////
-    // Functions
+    // Functions      
     /////////////////////////////////////////////////////////////
 
     constructor() {
@@ -129,8 +133,11 @@ contract SourcerAO is AccessControl {
     // set contract parameters
     function setParameters(uint _bail_percentage, uint _reputation_threshold_for_arbitration, uint _litigation_period) public {
         require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+        // the percentage of the funds that will be used as a bail
         bail_percentage = _bail_percentage;
+        // the reputation threshold to be arbitrator
         reputation_threshold_for_arbitration = _reputation_threshold_for_arbitration;
+        // the period in which the funders can start the litigation phase after the end of the project
         litigation_period = _litigation_period;
     }
 
@@ -169,7 +176,7 @@ contract SourcerAO is AccessControl {
         return projects_count;
     }
     function getProject(uint id) public view returns (Project_view memory) {
-        return Project_view(Projects[id].id, Projects[id].title, Projects[id].uri, Projects[id].creator, Projects[id].creation_date, Projects[id].open_to_fundings, Projects[id].state, Projects[id].total_bounty, Projects[id].total_bail, Projects[id].application_deadline, Projects[id].vote_deadline, Projects[id].chosen_dev, Projects[id].arbitrator, Projects[id].funders_addr, Projects[id].developpers_addr);    
+        return Project_view(Projects[id].id, Projects[id].title, Projects[id].uri, Projects[id].creator, Projects[id].creation_date, Projects[id].open_to_fundings, Projects[id].state, Projects[id].total_bounty, Projects[id].total_bail, Projects[id].application_deadline, Projects[id].vote_deadline, Projects[id].chosen_dev, Projects[id].arbitrator, Projects[id].funders_addr, Projects[id].developpers_addr, Projects[id].completion_date);    
     }
     // For the given project_id "id", return the address of the developper that "addr" voted for 
     function getVote(uint id, address addr) public view returns (address) {
@@ -215,7 +222,7 @@ contract SourcerAO is AccessControl {
         Projects[id].vote_deadline = _vote_deadline;
     }
     
-    // Fund a project
+    // Fund a project      
     function fundProject(uint id) public payable {
         require(projects_count > id, "Project does not exist");
         require(Projects[id].open_to_fundings, "Project is not open to fundings");
@@ -366,7 +373,7 @@ contract SourcerAO is AccessControl {
     function handleLitigationPhase(uint id) public {
         require(projects_count > id, "Project does not exist");
         require(Projects[id].state == ProjectState.LITIGATION, "Project is not in litigation");
-        require(Projects[id].chosen_dev == msg.sender || Projects[id].funds[msg.sender].bounty > 0, "You can't handle the litigation phase if you are involved in the project");
+        require(Projects[id].chosen_dev != msg.sender && Projects[id].funds[msg.sender].bounty == 0, "You can't handle the litigation phase if you are involved in the project");
         require(Projects[id].arbitrator == address(0), "Arbitrator is already set");
         require(Developpers[msg.sender].reputation >= reputation_threshold_for_arbitration, "You don't have the required reputation to be arbitrator");
         require(hasRole(ARBITRATION_BAN, msg.sender) == false, "You are banned from beeing arbitrator");
@@ -386,12 +393,12 @@ contract SourcerAO is AccessControl {
         revokeRole(ARBITRATION_BAN, addr);
     }
 
-    // Handle the arbitration phase
+    // Settle the litigation
     // The decision is a number between 0 and 100, 100 means that the developper is right, 0 means that the funders are right
-    // It will decide from who the arbitrator will take the bail and send the bounty to the developper or back to the funders
-    function handleArbitrationPhase(uint id, uint decision) public {
+    // It will decide from who the arbitrator will take the bail and send the bounty to tARBITRATIONhe developper or back to the funders
+    function settleLitigation(uint id, uint decision) public {
         require(projects_count > id, "Project does not exist");
-        require(Projects[id].state == ProjectState.LITIGATION, "Project is not in litigation");
+        require(Projects[id].state == ProjectState.ARBITRATION, "Project is not in arbitration");
         require(Projects[id].arbitrator == msg.sender, "You are not the arbitrator");
         require(decision >= 0 && decision <= 100, "Decision must be between 0 and 100");
         
@@ -416,17 +423,27 @@ contract SourcerAO is AccessControl {
         // transfer to the dev
         payable(Projects[id].chosen_dev).transfer(_to_dev);
 
-        Projects[id].state = ProjectState.COMPLETED;
+        Projects[id].state = ProjectState.CLOSED;
 
     }
 
     // End the project in normal conditions
-    function endProject(uint id) public {
+    // allow any funder to set the project as completed
+    function completeProject(uint id) public {
         require(projects_count > id, "Project does not exist");
         require(Projects[id].state == ProjectState.PROGRESS, "Project is not in progress");
+        require(Projects[id].funds[msg.sender].bounty > 0, "You have not funded the project, can't complete the project");
+        require(Projects[id].arbitrator == address(0), "Arbitrator is already set");
+        Projects[id].completion_date = block.timestamp;
+        Projects[id].state = ProjectState.COMPLETED;
+    }
+
+    // allow the developper to close the project and get paid
+    function closeProject(uint id) public {
+        require(projects_count > id, "Project does not exist");
+        require(Projects[id].state == ProjectState.COMPLETED, "Project is not completed");
         require(Projects[id].chosen_dev == msg.sender, "You are not the chosen developper");
-        require(Projects[id].total_bounty > 0, "Project has no bounty");
-        require(Projects[id].total_bounty == Projects[id].total_bail, "Project is not fully funded");
+        require(block.timestamp > Projects[id].completion_date + litigation_period, "Litigation period is not over");
         Projects[id].state = ProjectState.COMPLETED;
         
 
@@ -443,7 +460,7 @@ contract SourcerAO is AccessControl {
             payable(_funder).transfer(Projects[id].funds[_funder].bail);
         }
 
-        Projects[id].state = ProjectState.COMPLETED;
+        Projects[id].state = ProjectState.CLOSED;
 
     }
 
