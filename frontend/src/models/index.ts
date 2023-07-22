@@ -1,9 +1,11 @@
 export enum ProjectState {
   OPEN = 0,
-  PROGRESS = 1,
-  COMPLETED = 2,
-  LITIGATION = 3,
-  ARBITRATION = 4,
+  VOTE_PHASE = 1,
+  WAITING_FOR_DEV = 2,
+  PROGRESS = 3,
+  COMPLETED = 4,
+  LITIGATION = 5,
+  ARBITRATION = 6,
 }
 
 export interface Fund {
@@ -22,6 +24,7 @@ export interface Project {
   state: ProjectState;
   funders: Record<string, Fund>; // addr: amount
   application_date: Date;
+  vote_deadline: Date;
   applications: string[]; // addr
   elected_dev: string; // addr
   application_votes: Record<string, string>; // addr: addr

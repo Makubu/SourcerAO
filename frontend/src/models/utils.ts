@@ -12,6 +12,7 @@ export const dataToProject = (data: any): Project => {
     total_bounty: parseInt(data[7].toString()),
     total_bail: parseInt(data[8].toString()),
     application_date: new Date(parseInt(data[9].toString()) * 1000),
+    vote_deadline: new Date(parseInt(data[10].toString()) * 1000),
     elected_dev: data[11],
     arbitrator: data[12],
     funders: data[13],
@@ -22,6 +23,8 @@ export const dataToProject = (data: any): Project => {
 
 export const StateColors: Record<ProjectState, string> = {
   [ProjectState.OPEN]: 'green',
+  [ProjectState.VOTE_PHASE]: 'cyan',
+  [ProjectState.WAITING_FOR_DEV]: 'purple',
   [ProjectState.PROGRESS]: 'blue',
   [ProjectState.COMPLETED]: 'gray',
   [ProjectState.LITIGATION]: 'red',
@@ -30,6 +33,8 @@ export const StateColors: Record<ProjectState, string> = {
 
 export const StateName: Record<ProjectState, string> = {
   [ProjectState.OPEN]: 'Open',
+  [ProjectState.VOTE_PHASE]: 'Voting',
+  [ProjectState.WAITING_FOR_DEV]: 'Developer reveal',
   [ProjectState.PROGRESS]: 'Progress',
   [ProjectState.COMPLETED]: 'Completed',
   [ProjectState.LITIGATION]: 'Litigation',

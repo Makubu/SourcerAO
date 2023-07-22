@@ -21,7 +21,7 @@ const ProjectInfo: FC<projectInfoProps> = (props: projectInfoProps) => {
       <HStack justifyContent="space-between" marginBottom="1rem">
         <ProjectBadge state={project?.state as ProjectState} />
         <Tag fontSize="xl" fontWeight="bold" colorScheme="blue">
-          {(project?.total_amount || 0) / 1_000_000} ꜩ
+          {(project?.total_bounty || 0) / 1_000_000} eth
         </Tag>
       </HStack>
 
