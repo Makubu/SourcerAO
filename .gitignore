@@ -4,3 +4,6 @@ node_modules
 artifact/
 artifact/*
 artifact
+cache/
+cache/*
+cache
