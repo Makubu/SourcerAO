@@ -61,7 +61,7 @@ export const useConnect = () => {
 
   return {
     connect,
-    account,
+    account: account.toLowerCase(),
     isConnected,
   };
 };
@@ -74,14 +74,22 @@ export const useCreateProject = () => {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
     const cid = await uploadProjectDescription(projectDescription);
-    const operation = await contract.createProject(projectDescription.title, cid, true);
+    const application_deadline = new Date(Date.now() + 3600 * 24 * 7 * 1000);
+    const vote_deadline = new Date(Date.now() + 3600 * 24 * 7 * 2 * 1000);
+    const operation = await contract.createProject(
+      projectDescription.title,
+      cid,
+      true,
+      application_deadline.getTime(),
+      vote_deadline.getTime(),
+    );
     const toastId = toast({
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -154,9 +162,9 @@ export const useAcceptProject = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -175,9 +183,9 @@ export const useFundProject = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -195,9 +203,9 @@ export const useApplyProject = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -215,9 +223,9 @@ export const useUpdateCV = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -235,9 +243,9 @@ export const useStartVotePhase = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -255,9 +263,9 @@ export const useEndVotePhase = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -276,9 +284,9 @@ export const useChooseDeveloper = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -296,9 +304,9 @@ export const useCompleteProject = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };
@@ -316,9 +324,9 @@ export const useCloseProject = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 10_000,
+      duration: 20_000,
     });
-    operation.wait(1);
+    await operation.wait(1);
     toast.close(toastId);
     await revalidateProjects();
   };

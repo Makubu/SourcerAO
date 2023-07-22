@@ -22,12 +22,11 @@ export interface Project {
   creator: string;
   creation: Date;
   state: ProjectState;
-  funders: Record<string, Fund>; // addr: amount
+  funders: string[]; // addr
   application_date: Date;
   vote_deadline: Date;
   applications: string[]; // addr
   elected_dev: string; // addr
-  application_votes: Record<string, string>; // addr: addr
   arbitrator: string;
 }
 

@@ -211,6 +211,7 @@ const ProjectPage = () => {
     () => isConnected && account == project?.creator,
     [account, project],
   );
+  console.log('project', project, description, account, isCreator, project?.creator);
 
   const isFunder = useMemo(
     () => isConnected && Object.keys(project?.funders || {}).includes(account || ''),
