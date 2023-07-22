@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useGetDevelopers } from '@app/hooks';
-import { Project } from '@app/models';
+import { Project, ProjectState } from '@app/models';
 import {
   Badge,
   Box,
@@ -70,7 +70,7 @@ const ChooseDeveloperModal: FC<props> = (props: props) => {
                       variant="outline"
                       colorScheme="purple"
                       size="sm"
-                      isDisabled={loading}
+                      isDisabled={loading || project.state != ProjectState.VOTE_PHASE}
                       onClick={async () => await onClick(dev.dev_addr)}
                     >
                       Choose

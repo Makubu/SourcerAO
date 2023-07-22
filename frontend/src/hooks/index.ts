@@ -285,6 +285,26 @@ export const useEndVotePhase = () => {
   };
 };
 
+export const useForceVotePhase = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.forceVotePhase(projectId);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 20_000,
+    });
+    await operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
 // voteForDeveloper
 export const useChooseDeveloper = () => {
   const { provider } = useProvider();

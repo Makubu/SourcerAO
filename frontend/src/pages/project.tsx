@@ -11,8 +11,10 @@ import {
   useChooseDeveloper,
   useCompleteProject,
   useConnect,
+  useEndVotePhase,
   useFundProject,
   useGetProjectById,
+  useStartVotePhase,
   // useGetProjectById,
 } from '@app/hooks';
 import { Project, ProjectState } from '@app/models';
@@ -168,6 +170,96 @@ const AcceptProjectButton: FC<contractButtonProps> = (props: contractButtonProps
   );
 };
 
+const StartVotePhaseButton: FC<contractButtonProps> = (props: contractButtonProps) => {
+  const { project } = props;
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+  const startVotePhase = useStartVotePhase();
+
+  const onClick = async () => {
+    setLoading(true);
+    try {
+      if (project) {
+        await startVotePhase(project?.id);
+        toast({
+          title: 'Vote phase oppened',
+          status: 'success',
+          position: 'bottom-right',
+          isClosable: true,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button w="100%" size="sm" onClick={onClick} isLoading={loading}>
+      Start vote phase
+    </Button>
+  );
+};
+
+const ForceVotePhaseButton: FC<contractButtonProps> = (props: contractButtonProps) => {
+  const { project } = props;
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+  const startVotePhase = useStartVotePhase();
+
+  const onClick = async () => {
+    setLoading(true);
+    try {
+      if (project) {
+        await startVotePhase(project?.id);
+        toast({
+          title: 'Vote phase oppened',
+          status: 'success',
+          position: 'bottom-right',
+          isClosable: true,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button w="100%" size="sm" onClick={onClick} isLoading={loading}>
+      Force vote phase
+    </Button>
+  );
+};
+
+const EndVotePhaseButton: FC<contractButtonProps> = (props: contractButtonProps) => {
+  const { project } = props;
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+  const startVotePhase = useEndVotePhase();
+
+  const onClick = async () => {
+    setLoading(true);
+    try {
+      if (project) {
+        await startVotePhase(project?.id);
+        toast({
+          title: 'Vote phase closed',
+          status: 'success',
+          position: 'bottom-right',
+          isClosable: true,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button w="100%" size="sm" onClick={onClick} isLoading={loading}>
+      End vote phase
+    </Button>
+  );
+};
+
 const EndProjectButton: FC<contractButtonProps> = (props: contractButtonProps) => {
   const { project } = props;
   const toast = useToast();
@@ -306,15 +398,27 @@ const ProjectPage = () => {
             <>
               {project?.state == ProjectState.OPEN && <FundButton project={project} />}
 
-              {project?.state == ProjectState.OPEN && !isApplicant && !isCreator && (
+              {project?.state == ProjectState.OPEN && !isApplicant && (
                 <ApplyButton project={project} />
               )}
 
+              {project?.state == ProjectState.OPEN && !isApplicant && (
+                <StartVotePhaseButton project={project} />
+              )}
+
               {project?.state == ProjectState.OPEN && isCreator && (
+                <ForceVotePhaseButton project={project} />
+              )}
+
+              {project?.state == ProjectState.VOTE_PHASE && isFunder && (
                 <ChooseDeveloperButton project={project} />
               )}
 
-              {project?.state == ProjectState.OPEN && isChosenDeveloper && (
+              {project?.state == ProjectState.VOTE_PHASE && (
+                <EndVotePhaseButton project={project} />
+              )}
+
+              {project?.state == ProjectState.WAITING_FOR_DEV && isChosenDeveloper && (
                 <AcceptProjectButton project={project} />
               )}
 
