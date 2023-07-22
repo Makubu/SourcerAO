@@ -6,6 +6,7 @@ export enum ProjectState {
   COMPLETED = 4,
   LITIGATION = 5,
   ARBITRATION = 6,
+  CLOSED = 7,
 }
 
 export interface Fund {

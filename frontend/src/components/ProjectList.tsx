@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetProjects } from '@app/hooks';
 import { Project } from '@app/models';
 import { Box, Heading, HStack, Spinner, Tag, Text } from '@chakra-ui/react';
+import { ethers } from 'ethers';
 
 import Card from './Card';
 import ProjectBadge from './ProjectBadge';
@@ -31,7 +32,10 @@ const ProjectItem: FC<projectItemProps> = (props: projectItemProps) => {
       <HStack justifyContent="space-between" marginBottom="0.5rem">
         <Heading fontSize="lg">{project.title}</Heading>
         <Tag fontWeight="bold" fontSize="lg" colorScheme="blue">
-          {project.total_bounty / 1_000_000} eth
+          {ethers
+            .formatUnits(project?.total_bounty.toString() || '0', 'ether')
+            .toString()}{' '}
+          eth
         </Tag>
       </HStack>
       <HStack justifyContent="space-between">
