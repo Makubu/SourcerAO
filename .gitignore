@@ -1,9 +1,9 @@
 node_modules/
 node_modules/*
 node_modules
-artifact/
-artifact/*
-artifact
+artifacts/
+artifacts/*
+artifacts
 cache/
 cache/*
 cache
