@@ -39,6 +39,5 @@ export interface ProjectDescription {
 export interface Developer {
   dev_addr: string;
   reputation: number;
-  arbitration_right: boolean;
   cv_uri: string;
 }

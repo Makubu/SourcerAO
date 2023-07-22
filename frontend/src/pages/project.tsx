@@ -128,12 +128,12 @@ const ChooseDeveloperButton: FC<contractButtonProps> = (props: contractButtonPro
       <Button w="100%" size="sm" onClick={onOpen}>
         Choose developer
       </Button>
-      {/* <ChooseDeveloperModal
+      <ChooseDeveloperModal
         isOpen={isOpen}
         onClose={onClose}
         onChose={onChose}
         project={project}
-      /> */}
+      />
     </>
   );
 };

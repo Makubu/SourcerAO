@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Project, ProjectDescription } from '@app/models';
+import { Developer, Project, ProjectDescription } from '@app/models';
 import { dataToProject } from '@app/models/utils';
 import { useToast } from '@chakra-ui/react';
 import { ethers } from 'ethers';
@@ -10,6 +10,9 @@ import contractAbi from '../abi/contract.json';
 import { downloadProjectDescription, uploadProjectDescription } from './http';
 
 const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS;
+const PUBLIC_PROVIDER = new ethers.JsonRpcProvider(
+  'https://goerli.infura.io/v3/1f2293dc91f14fca8f613667f75dff45',
+);
 
 export const useProvider = () => {
   if (!window.ethereum) {
@@ -66,6 +69,24 @@ export const useConnect = () => {
   };
 };
 
+export const useGetDevelopers = (applications: string[]) => {
+  const getDevelopers = async () => {
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, PUBLIC_PROVIDER);
+    const developers: Developer[] = [];
+    for (const id of applications || []) {
+      const developer = await contract.getDevelopperDesc(id);
+      developers.push({
+        dev_addr: id,
+        reputation: developer['reputation'],
+        cv_uri: developer['cv_uri'],
+      });
+    }
+    return developers;
+  };
+
+  return useSWR('GetDevelopers', getDevelopers);
+};
+
 export const useCreateProject = () => {
   const { provider } = useProvider();
   const toast = useToast();
@@ -104,10 +125,7 @@ export const revalidateProjects = async () => {
 
 export const useGetProjects = () => {
   const getProjects = async () => {
-    const provider = new ethers.JsonRpcProvider(
-      'https://goerli.infura.io/v3/1f2293dc91f14fca8f613667f75dff45',
-    );
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, provider);
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, PUBLIC_PROVIDER);
     const projectCount = await contract.getProjectCount();
     const projects: Project[] = [];
     for (let id = 0; id < projectCount; ++id) {
@@ -129,11 +147,7 @@ export const useGetProjects = () => {
 
 export const useGetProjectById = (projectId: string) => {
   const getProject = async () => {
-    const provider = new ethers.JsonRpcProvider(
-      'https://goerli.infura.io/v3/1f2293dc91f14fca8f613667f75dff45',
-    );
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, provider);
-
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, PUBLIC_PROVIDER);
     const projectData = await contract.getProject(projectId);
     const project = dataToProject([...projectData]);
     const description = await downloadProjectDescription(project.uri);
