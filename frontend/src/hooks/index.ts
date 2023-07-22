@@ -177,7 +177,7 @@ export const useFundProject = () => {
   return async (projectId: string, fund: number) => {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
-    const fundInWei = ethers.parseEther(fund.toString());
+    const fundInWei = ethers.parseUnits(fund.toString(), 'gwei');
     const operation = await contract.fundProject(projectId, { value: fundInWei });
     const toastId = toast({
       title: `Waiting transation confirmation`,

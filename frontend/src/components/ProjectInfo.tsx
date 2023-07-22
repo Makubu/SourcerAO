@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Project, ProjectState } from '@app/models';
 import { Divider, Heading, HStack, Tag, Text } from '@chakra-ui/react';
+import { ethers } from 'ethers';
 
 import Card from './Card';
 import ProjectBadge from './ProjectBadge';
@@ -21,7 +22,10 @@ const ProjectInfo: FC<projectInfoProps> = (props: projectInfoProps) => {
       <HStack justifyContent="space-between" marginBottom="1rem">
         <ProjectBadge state={project?.state as ProjectState} />
         <Tag fontSize="xl" fontWeight="bold" colorScheme="blue">
-          {(project?.total_bounty || 0) / 1_000_000} eth
+          {ethers
+            .formatUnits(project?.total_bounty.toString() || '0', 'ether')
+            .toString()}{' '}
+          eth
         </Tag>
       </HStack>
 

@@ -93,7 +93,7 @@ const FundButton: FC<contractButtonProps> = (props: contractButtonProps) => {
   return (
     <HStack width="100%">
       <Button w="100%" size="sm" onClick={onClick} isLoading={isFunding}>
-        Fund
+        Fund (gwei)
       </Button>
       <Input
         size="sm"
@@ -211,7 +211,7 @@ const ProjectPage = () => {
     () => isConnected && account == project?.creator,
     [account, project],
   );
-  console.log('project', project, description, account, isCreator, project?.creator);
+  // console.log('project', project, description, account, isCreator, project?.creator);
 
   const isFunder = useMemo(
     () => isConnected && Object.keys(project?.funders || {}).includes(account || ''),
