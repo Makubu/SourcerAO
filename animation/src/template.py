@@ -2,7 +2,7 @@
 from manim import *
 
 
-class Develop(MovingCameraScene):
+class NoLitigation(MovingCameraScene):
     def init_last_scene(self):
         business = VGroup(*[SVGMobject("img/business.svg").scale(0.3) for _ in range(20)]).arrange_in_grid(buff= 0.1, rows=4).move_to(LEFT*5)
         self.add(business)
@@ -28,29 +28,17 @@ class Develop(MovingCameraScene):
         round = Circle(radius=1.3, color=GREEN).to_edge(RIGHT)
         developer = SVGMobject("img/programer.svg").scale(0.9).move_to(round)
         developer = VGroup(developer, round)
+        source_code = SVGMobject("img/source_code.svg").scale(0.3).next_to(contract, UP)
+        self.add(source_code)
         self.add(developer, contract)
         self.developer = developer
         self.header = header
         self.contract = contract
-        self.business = business
-
-    def wip(self):
-        text = self.get_text("The developer works on the project", font_size=30).to_edge(DOWN)
-        self.play(Write(text))
-        source_code = SVGMobject("img/source_code.svg").scale(0.3).next_to(self.developer[0], LEFT)
-        self.play(Write(source_code))
-        self.play(Flash(self.developer[1], flash_radius=1.5, num_lines=50, run_time = 3))
-        new_text = self.get_text("The code is finished and delivered", font_size=30).to_edge(DOWN)
-        new_text[3:7].set_color_by_gradient(BLUE, GREEN)
-        self.play(Transform(text, new_text))
-        self.play(source_code.animate.next_to(self.contract, UP))
-        self.play(Unwrite(text))
-        self.wait()
+        self.source_code = source_code
 
 
     def construct(self):
         self.init_last_scene()
-        self.wip()
 
     def get_text(self, text, font_size=90):
         return Text(text, font="Consolas", font_size=font_size)

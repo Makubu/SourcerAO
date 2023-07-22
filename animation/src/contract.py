@@ -9,7 +9,6 @@ class Contract(MovingCameraScene):
         self.choose_devs()
 
     def get_text(self, text, font_size=90):
-
         return Text(text, font="Consolas", font_size=font_size)
 
     def init_last_scene(self):
@@ -26,21 +25,41 @@ class Contract(MovingCameraScene):
         self.all_bounty = all_bounty
 
     def choose_contract(self):
-        text = self.get_text('"We want syntax coloring for a new programming language"', font_size=25)
-        text[7:15].set_color_by_gradient(BLUE, GREEN)
+        text = self.get_text('"We want syntax coloring for a new language"', font_size=25)
+        text[7:21].set_color_by_gradient(BLUE, GREEN)
         text.next_to(self.business, RIGHT)
         self.play(*[Write(text), self.all_bounty.animate.move_to(UP*3)])
-        move = LEFT*1.8 + UP * 0.05
-        new_text = self.get_text("Mission: ", font_size=24).move_to(self.all_bounty[0].get_center() + move + RIGHT * 3)
+        move = LEFT*3.5 + UP * 0.05
+        new_text = self.get_text("Mission: ", font_size=24).move_to(self.all_bounty[0].get_center() + move + RIGHT * 6)
         icon = SVGMobject("img/vs_code.svg").scale(0.2).next_to(new_text, DOWN+LEFT)
-        mission_text = self.get_text("Securisation", font_size = 22).next_to(icon, RIGHT)
+        mission_text = self.get_text("Syntax Coloration", font_size=22).next_to(icon, RIGHT)
         group_mission = VGroup(new_text, icon, mission_text)
         new_text.set_color_by_gradient(BLUE, GREEN)
-        new_rectangle = Rectangle(width = 8, height = 1.5, color=WHITE, fill_opacity=0).move_to(UP * 3).scale(0.8)
+        new_rectangle = Rectangle(width = 12, height = 1.5, color=WHITE, fill_opacity=0).move_to(UP * 3).scale(0.8)
         self.play(*[FadeTransform(self.all_bounty[2], new_rectangle), self.all_bounty[0].animate.shift(move), self.all_bounty[1].animate.shift(move),
                     FadeIn(group_mission)])
-        self.play(Unwrite(text))
+        self.play(Unwrite(text, run_time=1))
+        bail = self.get_text("Bail: ", font_size=24).next_to(self.all_bounty[0], RIGHT * 5)
+        bail.set_color_by_gradient(BLUE, GREEN)
+        self.play(Write(bail))
+        text = self.get_text("Each funder stakes a bail", font_size=25).to_edge(DOWN)
+        text[-4:].set_color_by_gradient(BLUE, GREEN)
+        self.play(Write(text))
+        bail_amounts = [Rectangle(width=0, height=0.2, color=YELLOW, fill_opacity=1).next_to(self.business, RIGHT).scale(0.8)]
+        width = 0
+        for funder in self.business:
+            width+=0.05
+            bail_amounts.append(
+                Rectangle(width=width, height=0.2, color=PURPLE, fill_opacity=1).next_to(
+                    self.business, RIGHT).scale(0.8)
+            )
+            self.play(*[
+                Flash(funder, flash_radius=0.2, num_lines=20, run_time=0.1),
+                FadeTransform(bail_amounts[-2], bail_amounts[-1], run_time=0.1)
+            ])
+        self.play(*[FadeOut(text), bail_amounts[-1].animate.next_to(bail, DOWN)])
         self.wait()
+        self.bail = bail_amounts[-1]
 
     def choose_devs(self):
         contract = SVGMobject("img/contract.svg").scale(0.8)
@@ -52,7 +71,7 @@ class Contract(MovingCameraScene):
         self.play(Flash(developer, flash_radius=1.4, num_lines=20))
         skill = SVGMobject("img/skills.svg").scale(0.4).next_to(round, LEFT)
         ipfs = ImageMobject("img/ipfs.png").scale(0.1).next_to(contract, DOWN)
-        text = self.get_text("A developer apply and share its CV with IPFS", font_size=25).to_edge(DOWN)
+        text = self.get_text("A developer applies and shares its CV with IPFS", font_size=25).to_edge(DOWN)
         text[-4:].set_color_by_gradient(BLUE, GREEN)
         self.play(*[FadeIn(skill, ipfs), Write(text)])
         self.play(skill.animate.next_to(self.business, RIGHT))
@@ -85,15 +104,13 @@ class Contract(MovingCameraScene):
             Transform(selected_circle, dev_group),
             Unwrite(new_text1), FadeOut(text)
         ])
-        bounty = Rectangle(width=5, height=2, color=GREEN, fill_opacity=1).scale(0.1).next_to(dev_group, LEFT).scale(0.8)
+        bounty = Rectangle(width=5, height=2, color=PURPLE_A, fill_opacity=1).scale(0.1).next_to(dev_group, LEFT).scale(0.8)
         text = self.get_text("The developer stakes a Bail", font_size=30).to_edge(DOWN)
-        text[-6:].set_color_by_gradient(BLUE, GREEN)
+        text[-4:].set_color_by_gradient(BLUE, GREEN)
         self.play(*[FadeIn(bounty), Write(text)])
-        self.play(bounty.animate.next_to(self.all_bounty[1], RIGHT))
-        old_bounty = VGroup(self.all_bounty[1], bounty)
-        new_bounty = Rectangle(width=25, height=2, color=RED, fill_opacity=1).scale(0.1).move_to(self.all_bounty[1]).scale(0.8)
-        self.play(*[Transform(old_bounty, new_bounty), Unwrite(text)])
+        self.play(*[bounty.animate.next_to(self.bail, RIGHT), FadeOut(text)])
         self.wait()
+
 
 if __name__ == "__main__":
     Contract()
