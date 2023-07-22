@@ -9,9 +9,11 @@ import {
   useAcceptProject,
   useApplyProject,
   useChooseDeveloper,
+  useCloseProject,
   useCompleteProject,
   useConnect,
   useEndVotePhase,
+  useForceVotePhase,
   useFundProject,
   useGetProjectById,
   useStartVotePhase,
@@ -170,6 +172,36 @@ const AcceptProjectButton: FC<contractButtonProps> = (props: contractButtonProps
   );
 };
 
+const CloseProjectButton: FC<contractButtonProps> = (props: contractButtonProps) => {
+  const { project } = props;
+  const toast = useToast();
+  const closeProject = useCloseProject();
+  const [loading, setLoading] = useState(false);
+
+  const onClick = async () => {
+    setLoading(true);
+    try {
+      if (project) {
+        await closeProject(project?.id);
+        toast({
+          title: 'Project closed!',
+          status: 'success',
+          position: 'bottom-right',
+          isClosable: true,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button w="100%" size="sm" onClick={onClick} isLoading={loading}>
+      Close project
+    </Button>
+  );
+};
+
 const StartVotePhaseButton: FC<contractButtonProps> = (props: contractButtonProps) => {
   const { project } = props;
   const toast = useToast();
@@ -204,7 +236,7 @@ const ForceVotePhaseButton: FC<contractButtonProps> = (props: contractButtonProp
   const { project } = props;
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const startVotePhase = useStartVotePhase();
+  const startVotePhase = useForceVotePhase();
 
   const onClick = async () => {
     setLoading(true);
@@ -303,18 +335,14 @@ const ProjectPage = () => {
     () => isConnected && account == project?.creator,
     [account, project],
   );
-  // console.log('project', project, description, account, isCreator, project?.creator);
 
   const isFunder = useMemo(
-    () => isConnected && Object.keys(project?.funders || {}).includes(account || ''),
+    () => isConnected && project?.funders.includes(account || ''),
     [account, project],
   );
 
   const isChosenDeveloper = useMemo(
-    () =>
-      isConnected &&
-      account == project?.elected_dev &&
-      project?.state == ProjectState.OPEN,
+    () => isConnected && account == project?.elected_dev.toLowerCase(),
     [account, project],
   );
 
@@ -330,7 +358,7 @@ const ProjectPage = () => {
     () =>
       isConnected &&
       (project?.applications || []).includes(account || '') &&
-      project?.state == ProjectState.OPEN,
+      (project?.state == ProjectState.OPEN || project?.state == ProjectState.VOTE_PHASE),
     [account, project],
   );
 
@@ -424,6 +452,10 @@ const ProjectPage = () => {
 
               {project?.state == ProjectState.PROGRESS && isCreator && (
                 <EndProjectButton project={project} />
+              )}
+
+              {project?.state == ProjectState.COMPLETED && isChosenDeveloper && (
+                <CloseProjectButton project={project} />
               )}
             </>
           )}

@@ -170,7 +170,7 @@ export const useAcceptProject = () => {
   return async (projectId: string, amount: number) => {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
-    const bailInWei = ethers.parseEther(amount.toString());
+    const bailInWei = ethers.formatUnits(amount.toString(), 'wei');
     const operation = await contract.acceptProject(projectId, { value: bailInWei });
     const toastId = toast({
       title: `Waiting transation confirmation`,

@@ -27,6 +27,7 @@ export const StateColors: Record<ProjectState, string> = {
   [ProjectState.COMPLETED]: 'gray',
   [ProjectState.LITIGATION]: 'red',
   [ProjectState.ARBITRATION]: 'orange',
+  [ProjectState.CLOSED]: 'black',
 };
 
 export const StateName: Record<ProjectState, string> = {
@@ -37,4 +38,5 @@ export const StateName: Record<ProjectState, string> = {
   [ProjectState.COMPLETED]: 'Completed',
   [ProjectState.LITIGATION]: 'Litigation',
   [ProjectState.ARBITRATION]: 'Arbitration',
+  [ProjectState.CLOSED]: 'closed',
 };
