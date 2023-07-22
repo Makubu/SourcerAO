@@ -79,7 +79,7 @@ export const useCreateProject = () => {
       title: `Waiting transation confirmation`,
       status: 'info',
       position: 'bottom-right',
-      duration: 60 * 1000,
+      duration: 10_000,
     });
     operation.wait(1);
     toast.close(toastId);
@@ -118,10 +118,153 @@ export const useGetProjects = () => {
   });
 };
 
-export const useAcceptProject = () => {};
-export const useApplyProject = () => {};
-export const useBeacon = () => {};
-export const useChooseDeveloper = () => {};
-export const useEndProject = () => {};
-export const useFundProject = () => {};
-export const useGetProjectById = () => {};
+export const useAcceptProject = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string, amount: number) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const bailInWei = ethers.parseEther(amount.toString());
+    const operation = await contract.acceptProject(projectId, { value: bailInWei });
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+export const useFundProject = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.createProject(projectId);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+export const useApplyProject = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string, cv_ipfs = '') => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.applyToProject(projectId, cv_ipfs);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+export const useUpdateCV = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (cv_ipfs: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.updateCV(cv_ipfs);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+export const useStartVotePhase = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.startVotePhase(projectId);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+export const useEndVotePhase = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.endVotePhase(projectId);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+// voteForDeveloper
+export const useChooseDeveloper = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string, developerAddress: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.voteForDeveloper(projectId, developerAddress);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+// -----------------------------------
+// startLitigationPhase_dev
+// startLitigationPhase_funder
+// handleLitigationPhase
+// settleLitigation
+// ----------------------------------
+// completeProject
+// closeProject
