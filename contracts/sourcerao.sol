@@ -82,6 +82,9 @@ struct Developpers_attributes {
     
 
 contract SourcerAO is AccessControl {
+
+    // event emitted when a developper is chosen for a project
+    event dev_chosen(uint id, address dev);
     
     /////////////////////////////////////////////////////////////
     // Roles
@@ -100,10 +103,9 @@ contract SourcerAO is AccessControl {
     /////////////////////////////////////////////////////////////
 
     // Projet parameters
-    uint bail_percentage;
-    uint reputation_threshold_for_arbitration;
-    uint litigation_period;
-    uint end_project_vote_period;
+    uint public bail_percentage;
+    uint public reputation_threshold_for_arbitration;
+    uint public litigation_period;
     
     //// mappings ////
     mapping (uint => Project) Projects;
@@ -159,6 +161,10 @@ contract SourcerAO is AccessControl {
        
     
     //// Views ////
+    // get parameters
+    function getParameters() public view returns (uint, uint, uint) {
+        return (bail_percentage, reputation_threshold_for_arbitration, litigation_period);
+    }
     function getProjectCount() public view returns (uint) {
         return projects_count;
     }
@@ -178,7 +184,7 @@ contract SourcerAO is AccessControl {
         return Projects[id].applications[addr];
     }
     // getDevelopper returns the developper's attributes
-    function getDevelopper(address addr) public view returns (Developpers_attributes memory) {
+    function getDevelopperDesc(address addr) public view returns (Developpers_attributes memory) {
         return Developpers[addr];
     }
 
@@ -204,7 +210,7 @@ contract SourcerAO is AccessControl {
 
     // set project parameters
     function setProjectParameters(uint id, uint _application_deadline, uint _vote_deadline) public {
-        require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+        require(Projects[id].creator == msg.sender, "Caller is not the project creator");
         Projects[id].application_deadline = _application_deadline;
         Projects[id].vote_deadline = _vote_deadline;
     }
@@ -241,11 +247,10 @@ contract SourcerAO is AccessControl {
     }
 
     // Apply to a project
-    function applyToProject(uint id, string memory _cv_uri) public {
+    function applyToProject(uint id) public {
         require(projects_count > id, "Project does not exist");
         require(Projects[id].state == ProjectState.OPEN, "Project is not open");
         require(Projects[id].applications[msg.sender] == false, "You have already applied to this project");
-        Developpers[msg.sender].cv_uri = _cv_uri;
         Projects[id].applications[msg.sender] = true;
         Projects[id].developpers_addr.push(msg.sender);
     }
@@ -282,7 +287,7 @@ contract SourcerAO is AccessControl {
     }
     
     // Vote for a developper
-    function voteForDevelopper(uint id, address developper) public {
+    function voteForDeveloper(uint id, address developper) public {
         require(projects_count > id, "Project does not exist");
         require(Projects[id].vote_deadline > block.timestamp, "Vote phase is over");
         require(Projects[id].state == ProjectState.VOTE_PHASE, "Project is not in vote phase");
@@ -300,6 +305,7 @@ contract SourcerAO is AccessControl {
         require(Projects[id].vote_deadline < block.timestamp, "Vote phase is not over");
         Projects[id].state = ProjectState.WAITING_FOR_DEV;
         Projects[id].chosen_dev = getWinner(id);
+        emit dev_chosen(id, Projects[id].chosen_dev);
     }
 
     // Get the developper with the most votes
