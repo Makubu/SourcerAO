@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import ConnectButton from '@app/components/ConnectButton';
 import CreateProjectButton from '@app/components/CreateProjectButton';
 import { Profile } from '@app/components/Profile';
+import ProjectList from '@app/components/ProjectList';
 import SearchBar from '@app/components/SearchBar';
 import ThemeToggler from '@app/components/ThemeToggler';
 import { Container, HStack, Stack, Text, VStack } from '@chakra-ui/react';
@@ -27,12 +29,14 @@ export default function Index() {
           <VStack alignItems="flex-end" width="100%">
             {/* <UserInfo /> */}
             <HStack spacing="1rem">
-              <Profile />
+              <ConnectButton />
             </HStack>
           </VStack>
         </Stack>
         <SearchBar search={search} setSearch={setSearch} />
       </VStack>
+
+      <ProjectList search={search} />
     </Container>
   );
 }
