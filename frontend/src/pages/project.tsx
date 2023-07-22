@@ -12,6 +12,7 @@ import {
   useCompleteProject,
   useConnect,
   useFundProject,
+  useGetProjectById,
   // useGetProjectById,
 } from '@app/hooks';
 import { Project, ProjectState } from '@app/models';
@@ -127,12 +128,12 @@ const ChooseDeveloperButton: FC<contractButtonProps> = (props: contractButtonPro
       <Button w="100%" size="sm" onClick={onOpen}>
         Choose developer
       </Button>
-      <ChooseDeveloperModal
+      {/* <ChooseDeveloperModal
         isOpen={isOpen}
         onClose={onClose}
         onChose={onChose}
         project={project}
-      />
+      /> */}
     </>
   );
 };
@@ -237,7 +238,7 @@ const ProjectPage = () => {
     () =>
       isConnected &&
       (project?.applications || []).includes(account || '') &&
-      project?.state == 'OPEN',
+      project?.state == ProjectState.OPEN,
     [account, project],
   );
 
@@ -303,21 +304,21 @@ const ProjectPage = () => {
 
           {isConnected && (
             <>
-              {project?.state == 'OPEN' && <FundButton project={project} />}
+              {project?.state == ProjectState.OPEN && <FundButton project={project} />}
 
-              {project?.state == 'OPEN' && !isApplicant && !isCreator && (
+              {project?.state == ProjectState.OPEN && !isApplicant && !isCreator && (
                 <ApplyButton project={project} />
               )}
 
-              {project?.state == 'OPEN' && isCreator && (
+              {project?.state == ProjectState.OPEN && isCreator && (
                 <ChooseDeveloperButton project={project} />
               )}
 
-              {project?.state == 'OPEN' && isChosenDeveloper && (
+              {project?.state == ProjectState.OPEN && isChosenDeveloper && (
                 <AcceptProjectButton project={project} />
               )}
 
-              {project?.state == 'PROGRESS' && isCreator && (
+              {project?.state == ProjectState.PROGRESS && isCreator && (
                 <EndProjectButton project={project} />
               )}
             </>

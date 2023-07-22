@@ -7,7 +7,7 @@ import useSWR, { mutate } from 'swr';
 
 import contractAbi from '../abi/contract.json';
 
-import { uploadProjectDescription } from './http';
+import { downloadProjectDescription, uploadProjectDescription } from './http';
 
 const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS;
 
@@ -115,6 +115,28 @@ export const useGetProjects = () => {
     revalidateIfStale: false,
     refreshWhenHidden: false,
     revalidateOnFocus: false,
+  });
+};
+
+export const useGetProjectById = (projectId: string) => {
+  const getProject = async () => {
+    const provider = new ethers.JsonRpcProvider(
+      'https://goerli.infura.io/v3/1f2293dc91f14fca8f613667f75dff45',
+    );
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, provider);
+    const projectData = await contract.getProject(projectId);
+    const project = dataToProject([...projectData]);
+    const description = await downloadProjectDescription(project.uri);
+
+    return {
+      project,
+      description,
+    };
+  };
+
+  return useSWR(`GetProject-${projectId}`, getProject, {
+    revalidateIfStale: false,
+    refreshWhenHidden: false,
   });
 };
 
