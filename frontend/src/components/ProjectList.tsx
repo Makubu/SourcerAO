@@ -31,7 +31,10 @@ const ProjectItem: FC<projectItemProps> = (props: projectItemProps) => {
       <HStack justifyContent="space-between" marginBottom="0.5rem">
         <Heading fontSize="lg">{project.title}</Heading>
         <Tag fontWeight="bold" fontSize="lg" colorScheme="blue">
-          {project.total_bounty / 1_000_000} eth
+          {ethers
+            .formatUnits(project?.total_bounty.toString() || '0', 'ether')
+            .toString()}{' '}
+          eth
         </Tag>
       </HStack>
       <HStack justifyContent="space-between">
