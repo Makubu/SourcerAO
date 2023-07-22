@@ -1,5 +1,6 @@
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
+import cors from "koa-cors";
 import { config } from "dotenv";
 import session from "koa-session";
 import { router } from "./controller.js";
@@ -48,6 +49,13 @@ export function createApp() {
   app.use(errorHandler());
   app.use(session(session_config, app));
   app.use(bodyParser());
+  app.use(
+    cors({
+      origin: "*",
+      methods: ["GET", "POST", "OPTION"],
+      credentials: true,
+    })
+  );
 
   // Routes
   app.use(router.routes());

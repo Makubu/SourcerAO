@@ -20,6 +20,9 @@ dependencies:
   koa-bodyparser:
     specifier: ^4.4.1
     version: 4.4.1
+  koa-cors:
+    specifier: ^0.0.16
+    version: 0.0.16
   koa-router:
     specifier: ^12.0.0
     version: 12.0.0
@@ -37,6 +40,9 @@ devDependencies:
   '@types/koa-bodyparser':
     specifier: ^4.3.10
     version: 4.3.10
+  '@types/koa-cors':
+    specifier: ^0.0.2
+    version: 0.0.2
   '@types/koa-router':
     specifier: ^7.4.4
     version: 7.4.4
@@ -559,6 +565,12 @@ packages:
 
   /@types/koa-compose@3.2.5:
     resolution: {integrity: sha512-B8nG/OoE1ORZqCkBVsup/AKcvjdgoHnfi4pZMn5UwAPCbhk/96xyv284eBYW8JlQbQ7zDmnpFr68I/40mFoIBQ==}
+    dependencies:
+      '@types/koa': 2.13.6
+    dev: true
+
+  /@types/koa-cors@0.0.2:
+    resolution: {integrity: sha512-uNaDY26HUVO+2C6arK8ZFODs9mBjYprD8mlvkVe2bYdX9wzEeKtycVXPafXpUkePhMh4sffIMkhRDyedokG/QA==}
     dependencies:
       '@types/koa': 2.13.6
     dev: true
@@ -1591,6 +1603,10 @@ packages:
     dependencies:
       co: 4.6.0
       koa-compose: 4.1.0
+    dev: false
+
+  /koa-cors@0.0.16:
+    resolution: {integrity: sha512-s15knPxe3AJBi2I/ZMPL0pSqU+PLYLO6k5tI0AqClkzavowvocPlSdFUwaHNqtjHMhsGmiq2tiX/25iILJx9YA==}
     dev: false
 
   /koa-router@12.0.0:
