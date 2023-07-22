@@ -380,10 +380,9 @@ contract SourcerAO is AccessControl {
         uint _bail = Projects[id].total_bail / 2;
         payable(msg.sender).transfer(_bail);
         uint _bail_dev = _bail * decision / 100;
-        uint _bail_funders = _bail - _bail_dev;
         payable(Projects[id].chosen_dev).transfer(_bail_dev);
         for (uint i=0; i<Projects[id].funders_addr.length; i++) {
-            payable(Projects[id].funders_addr[i]).transfer(_bail_funders / Projects[id].funders_addr.length);
+            payable(Projects[id].funders_addr[i]).transfer(Projects[id].funders[Projects[id].funders_addr[i]].bail*(100-decision)/100);
         }
     }
 
