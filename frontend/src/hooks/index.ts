@@ -117,3 +117,11 @@ export const useGetProjects = () => {
     revalidateOnFocus: false,
   });
 };
+
+export const useAcceptProject = () => {};
+export const useApplyProject = () => {};
+export const useBeacon = () => {};
+export const useChooseDeveloper = () => {};
+export const useEndProject = () => {};
+export const useFundProject = () => {};
+export const useGetProjectById = () => {};

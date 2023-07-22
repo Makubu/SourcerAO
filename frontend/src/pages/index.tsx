@@ -5,11 +5,12 @@ import { Profile } from '@app/components/Profile';
 import ProjectList from '@app/components/ProjectList';
 import SearchBar from '@app/components/SearchBar';
 import ThemeToggler from '@app/components/ThemeToggler';
+import { useGetProjects } from '@app/hooks';
 import { Container, HStack, Stack, Text, VStack } from '@chakra-ui/react';
 
 export default function Index() {
   const [search, setSearch] = useState('');
-  const projects = [];
+  const { data: projects } = useGetProjects();
 
   return (
     <Container minWidth="80%" maxHeight="100vh">

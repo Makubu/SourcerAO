@@ -19,3 +19,19 @@ export const dataToProject = (data: any): Project => {
     application_votes: {},
   };
 };
+
+export const StateColors: Record<ProjectState, string> = {
+  [ProjectState.OPEN]: 'green',
+  [ProjectState.PROGRESS]: 'blue',
+  [ProjectState.COMPLETED]: 'gray',
+  [ProjectState.LITIGATION]: 'red',
+  [ProjectState.ARBITRATION]: 'orange',
+};
+
+export const StateName: Record<ProjectState, string> = {
+  [ProjectState.OPEN]: 'Open',
+  [ProjectState.PROGRESS]: 'Progress',
+  [ProjectState.COMPLETED]: 'Completed',
+  [ProjectState.LITIGATION]: 'Litigation',
+  [ProjectState.ARBITRATION]: 'Arbitration',
+};
