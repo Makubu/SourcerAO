@@ -28,7 +28,7 @@ interface props {
 const ChooseDeveloperModal: FC<props> = (props: props) => {
   const { isOpen, onClose, onChose, project } = props;
   const [loading, setLoading] = useState(false);
-  const { data: developers, error } = useGetDevelopers(project.applications);
+  const { data: developers } = useGetDevelopers(project.applications);
 
   const applicants = useMemo(() => {
     return developers?.filter(({ dev_addr }) => {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import ConnectButton from '@app/components/ConnectButton';
 import CreateProjectButton from '@app/components/CreateProjectButton';
-import { Profile } from '@app/components/Profile';
 import ProjectList from '@app/components/ProjectList';
 import SearchBar from '@app/components/SearchBar';
 import ThemeToggler from '@app/components/ThemeToggler';
