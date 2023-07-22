@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useGetProjects } from '@app/hooks';
 import { Project } from '@app/models';
 import { Box, Heading, HStack, Spinner, Tag, Text } from '@chakra-ui/react';
+import { ethers } from 'ethers';
 
 import Card from './Card';
 import ProjectBadge from './ProjectBadge';
-import { ethers } from 'ethers';
 
 interface projectItemProps {
   project: Project;
