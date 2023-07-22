@@ -196,7 +196,7 @@ contract SourcerAO is AccessControl {
     }
 
     // project creation
-    function createProject(string memory _title, string memory _uri, bool _open_to_fundings) public {
+    function createProject(string memory _title, string memory _uri, bool _open_to_fundings, uint _application_deadline, uint _vote_deadline) public {
         uint id = projects_count;
         Project storage p = Projects[id];
         projects_count++;
@@ -213,6 +213,8 @@ contract SourcerAO is AccessControl {
         p.vote_deadline = 0;
         p.chosen_dev = address(0);
         p.arbitrator = address(0);
+        p.application_deadline = _application_deadline;
+        p.vote_deadline = _vote_deadline;
     }
 
     // set project parameters

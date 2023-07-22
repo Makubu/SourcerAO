@@ -22,7 +22,7 @@ describe("SourcerAO", function () {
         const [owner, addr1, addr2, addr3, addr4] = await ethers.getSigners();
         const sourcerao = await ethers.deployContract("SourcerAO");
         await sourcerao.waitForDeployment();
-        await sourcerao.connect(addr1).createProject("Test Project", "uri to desc", true);
+        await sourcerao.connect(addr1).createProject("Test Project", "uri to desc", true, 0, 0);
         await sourcerao.connect(addr1).setProjectParameters(0, await helpers.time.latest() + 3600, await helpers.time.latest() + 7200)
         await sourcerao.connect(addr1).fundProject(0, {value: ethers.parseEther("100")});
         await sourcerao.connect(addr2).fundProject(0, {value: ethers.parseEther("200")});
@@ -67,7 +67,7 @@ describe("SourcerAO", function () {
         it("Create a project", async function () {
             const { sourcerao, owner, addr1, addr2, addr3, addr4 } = await loadFixture(deployContract);
             
-            await sourcerao.connect(addr1).createProject("Test Project", "uri to desc", true);
+            await sourcerao.connect(addr1).createProject("Test Project", "uri to desc", true, 0, 0);
             
             const proj =  await sourcerao.getProject(0);
             expect(proj[1]).to.equal("Test Project");
@@ -77,7 +77,7 @@ describe("SourcerAO", function () {
         it("Fund a project", async function () {
             const { sourcerao, owner, addr1, addr2, addr3, addr4 } = await loadFixture(deployContract);
 
-            await sourcerao.connect(addr1).createProject("Test Project", "uri to desc", true);
+            await sourcerao.connect(addr1).createProject("Test Project", "uri to desc", true, 0, 0);
             
             var proj =  await sourcerao.getProject(0);        
             const params = await sourcerao.getParameters();
