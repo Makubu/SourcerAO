@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ProjectDescription } from '@app/models';
+import { Project, ProjectDescription } from '@app/models';
+import { dataToProject } from '@app/models/utils';
 import { useToast } from '@chakra-ui/react';
 import { ethers } from 'ethers';
 import useSWR, { mutate } from 'swr';
@@ -16,8 +17,7 @@ export const useProvider = () => {
     throw Error('ethereum provider not found');
   }
   const provider = new ethers.BrowserProvider(window.ethereum);
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi);
-  return { provider, contract };
+  return { provider };
 };
 
 export const useConnect = () => {
@@ -138,24 +138,20 @@ export const revalidateProjects = async () => {
 };
 
 export const useGetProjects = () => {
-  const { provider, contract } = useProvider();
+  const { provider } = useProvider();
 
   const getProjects = async () => {
-    console.log(provider, contract);
-    try {
-      const projectCount = await contract.getProjectCount();
-      console.log('get projects', projectCount);
-    } catch (e) {
-      console.log('err', e);
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const projectCount = await contract.getProjectCount();
+    const projects: Project[] = [];
+    for (let id = 0; id < projectCount; ++id) {
+      const project = await contract.getProject(id);
+      if (project) {
+        projects.push(dataToProject([...project]));
+      }
     }
-    // const projects: Project[] = [];
-    // for (const id of projects_id) {
-    //   const project = await contract.get_Project_value(id);
-    //   if (project) {
-    //     projects.push(dataToProject(project, id.toString()));
-    //   }
-    // }
-    return 0;
+    return projects;
   };
 
   return useSWR('GetProjects', getProjects, {

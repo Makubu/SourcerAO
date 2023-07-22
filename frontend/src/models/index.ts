@@ -3,11 +3,11 @@ export interface Account {
 }
 
 export enum ProjectState {
-  OPEN = 'OPEN',
-  PROGRESS = 'PROGRESS',
-  COMPLETED = 'COMPLETED',
-  LITIGATION = 'LITIGATION',
-  ARBITRATION = 'ARBITRATION',
+  OPEN = 0,
+  PROGRESS = 1,
+  COMPLETED = 2,
+  LITIGATION = 3,
+  ARBITRATION = 4,
 }
 
 export interface Fund {
@@ -18,7 +18,7 @@ export interface Fund {
 export interface Project {
   id: string;
   title: string;
-  total_amount: number;
+  total_bounty: number;
   total_bail: number;
   uri: string; // ipfs
   creator: string;

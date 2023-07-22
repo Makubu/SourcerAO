@@ -75,6 +75,25 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "dev",
+        "type": "address"
+      }
+    ],
+    "name": "dev_chosen",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -93,11 +112,6 @@
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_cv_uri",
-        "type": "string"
       }
     ],
     "name": "applyToProject",
@@ -455,11 +469,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "inputs": [
       {
         "internalType": "string",
@@ -485,7 +494,7 @@
         "type": "address"
       }
     ],
-    "name": "voteForDevelopper",
+    "name": "voteForDeveloper",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -502,6 +511,11 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
     "inputs": [],
@@ -576,7 +590,7 @@
         "type": "address"
       }
     ],
-    "name": "getDevelopper",
+    "name": "getDevelopperDesc",
     "outputs": [
       {
         "components": [

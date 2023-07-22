@@ -31,7 +31,7 @@ const ProjectItem: FC<projectItemProps> = (props: projectItemProps) => {
       <HStack justifyContent="space-between" marginBottom="0.5rem">
         <Heading fontSize="lg">{project.title}</Heading>
         <Tag fontWeight="bold" fontSize="lg" colorScheme="blue">
-          {project.total_amount / 1_000_000} ꜩ
+          {project.total_bounty / 1_000_000} eth
         </Tag>
       </HStack>
       <HStack justifyContent="space-between">
@@ -64,7 +64,7 @@ const ProjectList: FC<projectListProps> = (props: projectListProps) => {
   //   }, [search, projects]);
 
   return (
-    <>projects:{projects}</>
+    <>projects:{JSON.stringify(projects)}</>
     // <Card width="100%" maxHeight="70vh" height="fit-content" overflowY="auto">
     //   {isLoading ? (
     //     <Spinner />
