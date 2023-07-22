@@ -6,6 +6,7 @@ import { Box, Heading, HStack, Spinner, Tag, Text } from '@chakra-ui/react';
 
 import Card from './Card';
 import ProjectBadge from './ProjectBadge';
+import { ethers } from 'ethers';
 
 interface projectItemProps {
   project: Project;
