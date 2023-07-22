@@ -8,7 +8,7 @@ export const uploadProjectDescription = async (
   const res = await fetch(`${API}/upload`, {
     method: 'POST',
     body: JSON.stringify(data),
-    headers: { ContentType: 'application/json' },
+    headers: { 'Content-Type': 'application/json' },
   });
   const json = await res.json();
   return json['path'];
@@ -17,14 +17,22 @@ export const uploadProjectDescription = async (
 export const downloadProjectDescription = async (
   cid: string,
 ): Promise<ProjectDescription> => {
-  const res = await fetch(`${API}/download/${cid}`, {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  });
-  const json = await res.json();
-  return {
-    title: json['title'] || '',
-    description: json['description'] || '',
-    due: new Date(json['due']),
-  };
+  try {
+    const res = await fetch(`${API}/download/${cid}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    });
+    const json = await res.json();
+    return {
+      title: json['title'] || '',
+      description: json['description'] || '',
+      due: new Date(json['due'] || 0),
+    };
+  } catch {
+    return {
+      title: 'N/A',
+      description: 'N/A',
+      due: new Date(),
+    };
+  }
 };

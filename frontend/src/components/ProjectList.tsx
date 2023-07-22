@@ -57,10 +57,21 @@ const ProjectList: FC<projectListProps> = (props: projectListProps) => {
     if (!projects) {
       return [];
     }
+    let p: Project[] = projects;
     if (search.length != 0) {
-      return projects.filter(({ title }) => title.toLowerCase().includes(search.trim()));
+      p = projects.filter(({ title }) => title.toLowerCase().includes(search.trim()));
     }
-    return projects;
+
+    p.sort((a, b) => {
+      if (a.creation < b.creation) {
+        return -1;
+      }
+      if (a.creation > b.creation) {
+        return 1;
+      }
+      return 0;
+    });
+    return p;
   }, [search, projects]);
 
   return (

@@ -135,6 +135,32 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "closeProject",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "completeProject",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "_title",
         "type": "string"
@@ -148,22 +174,19 @@
         "internalType": "bool",
         "name": "_open_to_fundings",
         "type": "bool"
-      }
-    ],
-    "name": "createProject",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+      },
       {
         "internalType": "uint256",
-        "name": "id",
+        "name": "_application_deadline",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_vote_deadline",
         "type": "uint256"
       }
     ],
-    "name": "endProject",
+    "name": "createProject",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -247,24 +270,6 @@
       }
     ],
     "name": "grantRole",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "decision",
-        "type": "uint256"
-      }
-    ],
-    "name": "handleArbitrationPhase",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -412,6 +417,24 @@
       }
     ],
     "name": "setProjectParameters",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "decision",
+        "type": "uint256"
+      }
+    ],
+    "name": "settleLitigation",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -751,6 +774,11 @@
             "internalType": "address[]",
             "name": "developpers_addr",
             "type": "address[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "completion_date",
+            "type": "uint256"
           }
         ],
         "internalType": "struct Project_view",

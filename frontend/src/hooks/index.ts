@@ -108,6 +108,7 @@ export const useGetProjects = () => {
         projects.push(dataToProject([...project]));
       }
     }
+
     return projects;
   };
 
@@ -124,10 +125,10 @@ export const useGetProjectById = (projectId: string) => {
       'https://goerli.infura.io/v3/1f2293dc91f14fca8f613667f75dff45',
     );
     const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, provider);
+
     const projectData = await contract.getProject(projectId);
     const project = dataToProject([...projectData]);
     const description = await downloadProjectDescription(project.uri);
-
     return {
       project,
       description,
@@ -186,10 +187,10 @@ export const useApplyProject = () => {
   const { provider } = useProvider();
   const toast = useToast();
 
-  return async (projectId: string, cv_ipfs = '') => {
+  return async (projectId: string) => {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
-    const operation = await contract.applyToProject(projectId, cv_ipfs);
+    const operation = await contract.applyToProject(projectId);
     const toastId = toast({
       title: `Waiting transation confirmation`,
       status: 'info',

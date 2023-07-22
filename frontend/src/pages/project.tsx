@@ -199,10 +199,9 @@ const EndProjectButton: FC<contractButtonProps> = (props: contractButtonProps) =
 };
 
 const ProjectPage = () => {
-  const { id } = useParams();
-  // const { state, isConnected } = useBeacon();
+  const { projectId } = useParams();
   const { isConnected, account } = useConnect();
-  const { data } = useGetProjectById(id as string);
+  const { data } = useGetProjectById(projectId as string);
   const navigate = useNavigate();
 
   const project = useMemo(() => data?.project, [data]);

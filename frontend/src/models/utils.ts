@@ -1,7 +1,6 @@
 import { Project, ProjectState } from '.';
 
 export const dataToProject = (data: any): Project => {
-  console.log(data);
   return {
     id: data[0].toString(),
     title: data[1].toString(),
