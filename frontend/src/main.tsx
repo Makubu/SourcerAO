@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
-import { configureChains, createConfig, sepolia, WagmiConfig } from 'wagmi';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { goerli } from 'wagmi/chains';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -11,7 +12,7 @@ import Fonts from './theme.font.tsx';
 import theme from './theme.ts';
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
-  [sepolia], // mainnet in prod
+  [goerli], // mainnet in prod
   [publicProvider()],
 );
 
