@@ -4,7 +4,6 @@ import { dataToProject } from '@app/models/utils';
 import { useToast } from '@chakra-ui/react';
 import { ethers } from 'ethers';
 import useSWR, { mutate } from 'swr';
-import { useContractRead, useContractWrite, useWaitForTransaction } from 'wagmi';
 
 import contractAbi from '../abi/contract.json';
 
@@ -68,65 +67,23 @@ export const useConnect = () => {
 };
 
 export const useCreateProject = () => {
+  const { provider } = useProvider();
   const toast = useToast();
-  const {
-    data,
-    write,
-    isLoading: isPreparing,
-    isSuccess: isPending,
-  } = useContractWrite({
-    abi: contractAbi,
-    address: CONTRACT_ADDRESS,
-    functionName: 'createProject',
-  });
 
-  const { isSuccess: isConfirmed } = useWaitForTransaction({
-    confirmations: 1,
-    hash: data?.hash,
-  });
-
-  useEffect(() => {
-    const revalidate = async () => {
-      if (isConfirmed === true) {
-        await revalidateProjects();
-        toast.closeAll();
-        toast({
-          title: `Project created`,
-          description: data?.hash,
-          status: 'success',
-          position: 'bottom-right',
-          duration: 6000,
-        });
-      }
-    };
-    revalidate();
-  }, [isConfirmed]);
-
-  useEffect(() => {
-    if (isPending === true) {
-      toast({
-        title: `Waiting transation confirmation`,
-        status: 'info',
-        position: 'bottom-right',
-        duration: 60 * 1000,
-      });
-    }
-  }, [isPending]);
-
-  const action = async (projectDescription: ProjectDescription) => {
-    if (write) {
-      const cid = await uploadProjectDescription(projectDescription);
-      // const cid = 'ipfs/:123';
-      write({ args: [projectDescription.title, cid, true] });
-    }
-  };
-
-  return {
-    action,
-    loading: isPreparing,
-    success: isPending,
-    // loading: (isPreparing || isPending) && !isConfirmed,
-    // success: isConfirmed,
+  return async (projectDescription: ProjectDescription) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const cid = await uploadProjectDescription(projectDescription);
+    const operation = await contract.createProject(projectDescription.title, cid, true);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 60 * 1000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
   };
 };
 
@@ -138,11 +95,11 @@ export const revalidateProjects = async () => {
 };
 
 export const useGetProjects = () => {
-  const { provider } = useProvider();
-
   const getProjects = async () => {
-    const signer = await provider.getSigner();
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const provider = new ethers.JsonRpcProvider(
+      'https://goerli.infura.io/v3/1f2293dc91f14fca8f613667f75dff45',
+    );
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, provider);
     const projectCount = await contract.getProjectCount();
     const projects: Project[] = [];
     for (let id = 0; id < projectCount; ++id) {

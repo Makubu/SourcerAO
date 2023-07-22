@@ -1,11 +1,11 @@
+import { useConnect } from '@app/hooks';
 import { Button, useDisclosure } from '@chakra-ui/react';
-import { useAccount } from 'wagmi';
 
 import CreateProjectModal from './CreateProjectModal';
 import { CreateIcon } from './Icons';
 
 const CreateProjectButton = () => {
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnect();
   const { onOpen, isOpen, onClose } = useDisclosure();
 
   return (

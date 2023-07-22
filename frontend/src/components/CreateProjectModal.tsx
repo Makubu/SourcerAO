@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useCreateProject } from '@app/hooks';
 import { ProjectDescription } from '@app/models';
 import {
@@ -15,6 +15,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Textarea,
+  useToast,
 } from '@chakra-ui/react';
 
 interface props {
@@ -24,29 +25,38 @@ interface props {
 
 const CreateProjectModal: FC<props> = (props: props) => {
   const { isOpen, onClose } = props;
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState(0);
-  const { action: createProject, loading, success } = useCreateProject();
+  const toast = useToast();
+  const createProject = useCreateProject();
 
   const isValid = useMemo(() => title.trim() && description.trim(), [title, description]);
 
   const onCreate = async () => {
-    const projectDescription: ProjectDescription = {
-      title: title,
-      description: description,
-      due: new Date(),
-    };
-    await createProject(projectDescription);
-  };
-
-  useEffect(() => {
-    if (success === true) {
+    setLoading(true);
+    try {
+      const projectDescription: ProjectDescription = {
+        title: title,
+        description: description,
+        due: new Date(),
+      };
+      await createProject(projectDescription);
+      setLoading(false);
+      onClose();
+      toast({
+        title: 'Project created',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-right',
+        size: 'md',
+      });
+    } finally {
       setDescription('');
       setTitle('');
-      onClose();
     }
-  }, [success]);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="4xl" closeOnOverlayClick={!loading}>
@@ -62,14 +72,6 @@ const CreateProjectModal: FC<props> = (props: props) => {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-              />
-            </FormControl>
-            <FormControl marginBottom="1rem">
-              <FormLabel>Amount (uꜩ)</FormLabel>
-              <Input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.valueAsNumber)}
               />
             </FormControl>
           </HStack>

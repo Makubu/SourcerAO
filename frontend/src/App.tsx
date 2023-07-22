@@ -21,8 +21,8 @@ export default function App() {
       <Routes>
         <Route>
           <Route path="/" element={<IndexPage />} />
-          <Route path="/project/:projectId" element={<ProjectPage />} />
-          <Route path="/user/:userId" element={<UserPage />} />
+          <Route path="/projects/:projectId" element={<ProjectPage />} />
+          <Route path="/users/:userId" element={<UserPage />} />
         </Route>
       </Routes>
     </Container>

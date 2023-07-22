@@ -53,31 +53,30 @@ const ProjectList: FC<projectListProps> = (props: projectListProps) => {
   const { search } = props;
   const { data: projects, isLoading } = useGetProjects();
 
-  //   const filteredProject = useMemo(() => {
-  //     if (!projects) {
-  //       return [];
-  //     }
-  //     if (search.length != 0) {
-  //       return projects.filter(({ title }) => title.toLowerCase().includes(search.trim()));
-  //     }
-  //     return projects;
-  //   }, [search, projects]);
+  const filteredProject = useMemo(() => {
+    if (!projects) {
+      return [];
+    }
+    if (search.length != 0) {
+      return projects.filter(({ title }) => title.toLowerCase().includes(search.trim()));
+    }
+    return projects;
+  }, [search, projects]);
 
   return (
-    <>projects:{JSON.stringify(projects)}</>
-    // <Card width="100%" maxHeight="70vh" height="fit-content" overflowY="auto">
-    //   {isLoading ? (
-    //     <Spinner />
-    //   ) : filteredProject.length ? (
-    //     <>
-    //       {filteredProject.map((project) => (
-    //         <ProjectItem project={project} key={project.id} />
-    //       ))}
-    //     </>
-    //   ) : (
-    //     <Text>No projects 😱</Text>
-    //   )}
-    // </Card>
+    <Card width="100%" maxHeight="70vh" height="fit-content" overflowY="auto">
+      {isLoading ? (
+        <Spinner />
+      ) : filteredProject.length ? (
+        <>
+          {filteredProject.map((project) => (
+            <ProjectItem project={project} key={project.id} />
+          ))}
+        </>
+      ) : (
+        <Text>No projects 😱</Text>
+      )}
+    </Card>
   );
 };
 

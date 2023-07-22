@@ -1,7 +1,3 @@
-export interface Account {
-  address: string;
-}
-
 export enum ProjectState {
   OPEN = 0,
   PROGRESS = 1,
