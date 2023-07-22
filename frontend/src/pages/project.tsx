@@ -8,13 +8,13 @@ import ProjectInfo from '@app/components/ProjectInfo';
 import {
   useAcceptProject,
   useApplyProject,
-  useBeacon,
   useChooseDeveloper,
-  useEndProject,
+  useCompleteProject,
+  useConnect,
   useFundProject,
-  useGetProjectById,
+  // useGetProjectById,
 } from '@app/hooks';
-import { Project } from '@app/models';
+import { Project, ProjectState } from '@app/models';
 import {
   Badge,
   Box,
@@ -170,7 +170,7 @@ const AcceptProjectButton: FC<contractButtonProps> = (props: contractButtonProps
 const EndProjectButton: FC<contractButtonProps> = (props: contractButtonProps) => {
   const { project } = props;
   const toast = useToast();
-  const endProject = useEndProject();
+  const endProject = useCompleteProject();
   const [loading, setLoading] = useState(false);
 
   const onClick = async () => {
@@ -199,7 +199,8 @@ const EndProjectButton: FC<contractButtonProps> = (props: contractButtonProps) =
 
 const ProjectPage = () => {
   const { id } = useParams();
-  const { state, isConnected } = useBeacon();
+  // const { state, isConnected } = useBeacon();
+  const { isConnected, account } = useConnect();
   const { data } = useGetProjectById(id as string);
   const navigate = useNavigate();
 
@@ -207,39 +208,37 @@ const ProjectPage = () => {
   const description = useMemo(() => data?.description, [data]);
 
   const isCreator = useMemo(
-    () => isConnected && state.userAddress == project?.creator,
-    [state, project],
+    () => isConnected && account == project?.creator,
+    [account, project],
   );
 
   const isFunder = useMemo(
-    () =>
-      isConnected &&
-      Object.keys(project?.funders || {}).includes(state.userAddress || ''),
-    [state, project],
+    () => isConnected && Object.keys(project?.funders || {}).includes(account || ''),
+    [account, project],
   );
 
   const isChosenDeveloper = useMemo(
     () =>
       isConnected &&
-      state.userAddress == project?.elected_dev &&
-      project?.state == 'OPEN',
-    [state, project],
+      account == project?.elected_dev &&
+      project?.state == ProjectState.OPEN,
+    [account, project],
   );
 
   const isDeveloper = useMemo(
     () =>
       isConnected &&
-      state.userAddress == project?.elected_dev &&
-      project?.state == 'PROGRESS',
-    [state, project],
+      account == project?.elected_dev &&
+      project?.state == ProjectState.PROGRESS,
+    [account, project],
   );
 
   const isApplicant = useMemo(
     () =>
       isConnected &&
-      (project?.applications || []).includes(state.userAddress || '') &&
+      (project?.applications || []).includes(account || '') &&
       project?.state == 'OPEN',
-    [state, project],
+    [account, project],
   );
 
   return (

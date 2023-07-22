@@ -143,10 +143,11 @@ export const useFundProject = () => {
   const { provider } = useProvider();
   const toast = useToast();
 
-  return async (projectId: string) => {
+  return async (projectId: string, fund: number) => {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
-    const operation = await contract.createProject(projectId);
+    const fundInWei = ethers.parseEther(fund.toString());
+    const operation = await contract.fundProject(projectId, { value: fundInWei });
     const toastId = toast({
       title: `Waiting transation confirmation`,
       status: 'info',
@@ -260,11 +261,49 @@ export const useChooseDeveloper = () => {
   };
 };
 
+export const useCompleteProject = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.completeProject(projectId);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
+export const useCloseProject = () => {
+  const { provider } = useProvider();
+  const toast = useToast();
+
+  return async (projectId: string) => {
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+    const operation = await contract.closeProject(projectId);
+    const toastId = toast({
+      title: `Waiting transation confirmation`,
+      status: 'info',
+      position: 'bottom-right',
+      duration: 10_000,
+    });
+    operation.wait(1);
+    toast.close(toastId);
+    await revalidateProjects();
+  };
+};
+
 // -----------------------------------
 // startLitigationPhase_dev
 // startLitigationPhase_funder
 // handleLitigationPhase
 // settleLitigation
 // ----------------------------------
-// completeProject
-// closeProject
