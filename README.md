@@ -2,7 +2,7 @@
 
  ![SourcerAO Logo](/fig/sourcerao_log.webp)
 
-SourcerAO is a decentralized marketplace that connects contributors with people willing to fund open-source projects (or for instance new features on open-source projects). Funders lock their stakes into a communal bounty, developers apply and are elected through a DAO vote, and both sides post a bail to guarantee good behaviour. At delivery time, the DAO can settle disputes: arbitrators are selected based on reputation, are rewarded from the losing side’s bail, and decide how the bounty is split.
+SourcerAO is a decentralized platform that connects contributors with people willing to fund open-source projects (or for instance new features on open-source projects). Funders lock their stakes into a communal bounty, developers apply and are elected through a DAO vote, and both sides post a bail to guarantee good behaviour. At delivery time, the DAO can settle disputes: arbitrators are selected based on reputation, are rewarded from the losing side’s bail, and decide how the bounty is split.
 
 This codebase was produced during the ETHCC Paris 2023 hackathon and contains everything needed to run the end-to-end demo:
 
